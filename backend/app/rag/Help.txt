@@ -1,0 +1,51 @@
+First run commands then 
+
+edit 
+file : pyproject.toml
+[project]
+name = "rag-support-chatbot"
+version = "0.1.0"
+requires-python = ">=3.11,<3.12"
+dependencies = []
+
+
+
+
+
+
+
+
+#  commands to run 
+
+pip install uv 
+
+uv python install 3.11
+
+uv python list
+
+uv init
+
+uv venv --python 3.11
+
+.venv\Scripts\activate 
+
+uv add langchain
+uv add langchain-community
+uv add chromadb
+uv add sentence-transformers
+uv add langchain-google-genai
+uv add google-generativeai 
+uv add langchain-huggingface
+uv add langchain-chroma
+
+uv add langchain
+uv add rank_bm25
+uv sync
+
+First Time Run :
+vector_db folder : ingest.py once (recommended) 
+
+
+# To run Program 
+uv run main.py
+
