@@ -1,0 +1,16 @@
+{
+  "student_id": "student001",
+  "current_topic": "physics",
+  "level": "beginner",
+  "progress": {
+    "completed_topics": []
+  },
+  "quiz_history": [],
+  "gamification": {
+    "xp": 0,
+    "streak": 0,
+    "level": 1,
+    "badges": []
+  },
+  "pending_quiz": null
+}

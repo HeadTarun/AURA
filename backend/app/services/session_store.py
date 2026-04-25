@@ -2,6 +2,12 @@ import json
 import os
 from typing import Any
 
+# Absolute path anchored to this file so it works regardless of CWD
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+SESSION_DIR = os.path.join(BASE_DIR, "sessions")
+
+os.makedirs(SESSION_DIR, exist_ok=True)
+
 ALLOWED_KEYS = {
     "student_id",
     "current_topic",
@@ -31,7 +37,7 @@ def load_session(student_id: str) -> dict[str, Any]:
     Never returns None. Always returns a valid session dict.
     Adds any missing keys from default schema (forward compat).
     """
-    path = f"sessions/{student_id}.json"
+    path = os.path.join(SESSION_DIR, f"{student_id}.json")
     if os.path.exists(path):
         with open(path, encoding="utf-8") as f:
             session = json.load(f)
@@ -55,7 +61,8 @@ def save_session(session: dict[str, Any]) -> None:
 
     session["quiz_history"] = session["quiz_history"][-100:]
 
-    os.makedirs("sessions", exist_ok=True)
-    path = f"sessions/{session['student_id']}.json"
+    print("Saving session:", session["student_id"])
+    path = os.path.join(SESSION_DIR, f"{session['student_id']}.json")
+    print("Path:", path)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(session, f, indent=2)
