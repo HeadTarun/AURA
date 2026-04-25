@@ -1,3 +1,6 @@
+from importlib import import_module
+from typing import Any
+
 from fastapi import APIRouter
 
 from app.services.session_store import load_session
@@ -5,11 +8,59 @@ from app.services.session_store import load_session
 router = APIRouter(tags=["learn"])
 
 
+def _retrieve_chunks(topic: str, top_k: int = 3) -> list[str]:
+    rag_module = import_module("app.rag.rag_pipeline")
+
+    retrieve = getattr(rag_module, "retrieve", None)
+    if callable(retrieve):
+        result = retrieve(topic, top_k=top_k)
+        if isinstance(result, list):
+            return [str(item) for item in result[:top_k]]
+        raise TypeError("rag_pipeline.retrieve() must return a list")
+
+    retriever = getattr(rag_module, "retriever", None)
+    if retriever is not None and hasattr(retriever, "invoke"):
+        docs = retriever.invoke(topic)
+        if not isinstance(docs, list):
+            raise TypeError("rag_pipeline.retriever.invoke() must return a list")
+        chunks: list[str] = []
+        for doc in docs[:top_k]:
+            content: Any = getattr(doc, "page_content", None)
+            chunks.append(str(content if content is not None else doc))
+        return chunks
+
+    raise AttributeError("No retrieve() function or retriever.invoke() found in app.rag.rag_pipeline")
+
+
 @router.get("/debug/session/{student_id}", tags=["debug"])
 def debug_session(student_id: str) -> dict:
     return load_session(student_id)
 
 
+@router.get("/debug/rag/{topic}", tags=["debug"])
+def debug_rag(topic: str) -> dict[str, Any]:
+    try:
+        chunks = _retrieve_chunks(topic, top_k=3)
+    except (AttributeError, ImportError, ModuleNotFoundError, TypeError, ValueError) as exc:
+        return {"topic": topic, "chunks_found": 0, "chunks": [], "error": str(exc)}
+    return {"topic": topic, "chunks_found": len(chunks), "chunks": chunks}
+
+
+@router.get("/debug/llm", tags=["debug"])
+def debug_llm() -> dict[str, Any]:
+    from app.services.llm_client import call_llm
+
+    fallback = {"test": "fallback_used"}
+    return call_llm(
+        prompt='Return this JSON exactly: {"test":"gemini_ok"}',
+        fallback=fallback,
+    )
+
+
 @router.post("/learn")
-def learn() -> dict:
-    return {"status": "stub"}
+def learn(topic: str = "Percentage") -> dict[str, Any]:
+    try:
+        chunks = _retrieve_chunks(topic, top_k=3)
+    except (AttributeError, ImportError, ModuleNotFoundError, TypeError, ValueError) as exc:
+        return {"status": "stub", "topic": topic, "chunks_found": 0, "chunks": [], "error": str(exc)}
+    return {"status": "stub", "topic": topic, "chunks_found": len(chunks), "chunks": chunks}
