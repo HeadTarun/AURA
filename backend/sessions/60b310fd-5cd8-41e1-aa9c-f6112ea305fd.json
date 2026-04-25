@@ -1,0 +1,50 @@
+{
+  "level": "beginner",
+  "progress": {
+    "completed_topics": [
+      "Recurssion"
+    ]
+  },
+  "quiz_history": [
+    {
+      "question": "What is the primary purpose of using an array in programming?",
+      "answer": "To store a collection of values of the same data type",
+      "student_answer": "To store a single value",
+      "correct": false,
+      "score": 0
+    },
+    {
+      "question": "What is the primary purpose of using an array in a programming language?",
+      "answer": "To store a collection of values of the same data type",
+      "student_answer": "To perform mathematical operations",
+      "correct": false,
+      "score": 0
+    },
+    {
+      "question": "What is the primary purpose of using an array in programming?",
+      "answer": "To store a collection of values of the same data type",
+      "student_answer": "To create a graphic user interface",
+      "correct": false,
+      "score": 0
+    },
+    {
+      "question": "What is the primary purpose of a base case in a recursive function?",
+      "answer": "To prevent the function from calling itself indefinitely",
+      "student_answer": "To prevent the function from calling itself indefinitely",
+      "correct": true,
+      "score": 10
+    }
+  ],
+  "student_id": "60b310fd-5cd8-41e1-aa9c-f6112ea305fd",
+  "pending_quiz": null,
+  "current_topic": "Recurssion",
+  "gamification": {
+    "xp": 10,
+    "streak": 1,
+    "level": 1,
+    "badges": [
+      "first_lesson",
+      "perfect_quiz"
+    ]
+  }
+}

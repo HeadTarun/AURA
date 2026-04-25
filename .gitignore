@@ -1,0 +1,11 @@
+.vscode/*
+!.vscode/extensions.json
+node_modules/
+.next/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+.pytest-tmp/
+.uv-cache/
+.env 

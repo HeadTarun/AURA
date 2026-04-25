@@ -1,0 +1,38 @@
+{
+  "pending_quiz": {
+    "question": "What is the primary purpose of using an array in programming?",
+    "options": [
+      "To store a single value",
+      "To store a collection of values of the same data type",
+      "To perform mathematical operations",
+      "To create a graphical user interface"
+    ],
+    "answer": "To store a collection of values of the same data type",
+    "explanation": "Arrays are used to store multiple values of the same data type in a single variable, allowing for efficient storage and manipulation of data.",
+    "difficulty": "beginner",
+    "concept_tested": "array basics",
+    "hint": "Think about how you would store a list of numbers or names in a program",
+    "time_limit_sec": 60
+  },
+  "gamification": {
+    "xp": 0,
+    "streak": 0,
+    "level": 1,
+    "badges": []
+  },
+  "level": "beginner",
+  "student_id": "825b4b4d-3d40-4b08-877d-c0419a35d84a",
+  "progress": {
+    "completed_topics": []
+  },
+  "current_topic": "array",
+  "quiz_history": [
+    {
+      "question": "What is the primary purpose of using indexes in an array?",
+      "answer": "To speed up the search operation in the array",
+      "student_answer": "To decrease the memory usage of the array",
+      "correct": false,
+      "score": 0
+    }
+  ]
+}
