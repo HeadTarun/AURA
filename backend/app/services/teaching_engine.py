@@ -1,7 +1,8 @@
-<<<<<<< HEAD
-# backend/app/services/teaching_engine.py
+from typing import Any
 
-from app.services.llm_client import call_llm
+from app.services import llm_client
+
+VALID_LEVELS = {"beginner", "intermediate", "advanced"}
 
 TEACHING_PROMPT = """
 You are an expert tutor. Generate a structured lesson for the following topic.
@@ -32,77 +33,94 @@ Required JSON:
 """
 
 REQUIRED_FIELDS = [
-    "concept", "explanation_in_simple", "real_world_examples",
-    "key_points", "step_by_step", "common_mistakes",
-    "difficulty", "estimated_time_min", "confidence_score",
+    "concept",
+    "explanation_in_simple",
+    "real_world_examples",
+    "key_points",
+    "step_by_step",
+    "common_mistakes",
+    "difficulty",
+    "estimated_time_min",
+    "confidence_score",
 ]
 
 
-def validate_teaching(data: dict) -> bool:
+def normalize_level(level: str | None) -> str:
+    normalized = (level or "beginner").strip().lower()
+    return normalized if normalized in VALID_LEVELS else "beginner"
+
+
+def validate_teaching(data: Any) -> bool:
     if not isinstance(data, dict):
         return False
-    for field in REQUIRED_FIELDS:
-        if field not in data:
-            return False
-    if data.get("difficulty") not in ["beginner", "intermediate", "advanced"]:
+    if any(field not in data for field in REQUIRED_FIELDS):
+        return False
+    if data.get("difficulty") not in VALID_LEVELS:
         return False
     if not isinstance(data.get("estimated_time_min"), int):
         return False
-    if not isinstance(data.get("confidence_score"), (int, float)):
+    if not isinstance(data.get("confidence_score"), int | float):
         return False
-    return True
+    list_fields = [
+        "real_world_examples",
+        "key_points",
+        "step_by_step",
+        "common_mistakes",
+    ]
+    return all(isinstance(data.get(field), list) for field in list_fields)
 
 
-def get_teaching_fallback(topic: str, level: str) -> dict:
+def get_teaching_fallback(topic: str, level: str) -> dict[str, Any]:
+    safe_topic = topic.strip() if topic and topic.strip() else "Unknown Topic"
+    safe_level = normalize_level(level)
     return {
-        "concept": f"Introduction to {topic}",
+        "concept": f"Introduction to {safe_topic}",
         "explanation_in_simple": (
-            f"{topic} is a fundamental concept. "
-            "Study the provided materials for a full explanation."
+            f"{safe_topic} is an important concept. Start with the definition, "
+            "then connect it to examples before solving practice questions."
         ),
         "real_world_examples": [
-            "Used in daily calculations",
-            "Applied in comparing quantities",
+            "Used in everyday decision making",
+            "Applied when comparing or organizing information",
         ],
         "key_points": [
             "Understand the core definition",
-            "Practice with worked examples",
-            "Review key formulas",
+            "Study one clear example",
+            "Practice with a small question",
         ],
         "step_by_step": [
-            "Read the definition carefully",
-            "Study one worked example",
-            "Solve a practice problem",
+            "Read the concept carefully",
+            "Identify the important values or ideas",
+            "Apply the rule to a simple example",
         ],
         "common_mistakes": [
-            "Confusing the formula variables",
-            "Forgetting to include units",
+            "Skipping the definition",
+            "Applying the rule without checking the question",
         ],
-        "difficulty": level,
+        "difficulty": safe_level,
         "estimated_time_min": 10,
         "confidence_score": 0.5,
     }
 
 
-def generate_lesson(topic: str, level: str, context: str) -> dict:
-    """
-    Generate a structured lesson using Gemini (primary) or Groq (fallback).
-    Context is RAG-retrieved text from rag_pipeline.retrieve().
-    Returns Teaching JSON dict. Never raises an exception.
-    """
-    if not topic:
-        return get_teaching_fallback("Unknown Topic", level)
+def generate_lesson(topic: str, level: str, context: str = "") -> dict[str, Any]:
+    safe_topic = topic.strip() if topic else ""
+    safe_level = normalize_level(level)
+    fallback = get_teaching_fallback(safe_topic, safe_level)
+    if not safe_topic:
+        return fallback
 
-    ctx = context if context else "No additional context available. Use your general knowledge."
-    prompt = TEACHING_PROMPT.format(topic=topic, level=level, context=ctx)
-    fallback = get_teaching_fallback(topic, level)
+    ctx = context.strip() if context else ""
+    if not ctx:
+        ctx = "No additional context available. Use your general knowledge."
 
-    data = call_llm(prompt, fallback, max_tokens=1024)
+    try:
+        data = llm_client.call_llm(
+            TEACHING_PROMPT.format(topic=safe_topic, level=safe_level, context=ctx),
+            fallback,
+            max_tokens=1024,
+        )
+    except Exception:
+        return fallback
 
-    if validate_teaching(data):
-        return data
-
-    return fallback
-=======
-# teaching_engine.py — Core teaching loop: explanation, examples, Socratic follow-ups
->>>>>>> 7112dbfcf0f7cbb6a023bd5e7a3412fc2eb4431b
+    return data if validate_teaching(data) else fallback

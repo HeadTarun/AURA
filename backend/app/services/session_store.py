@@ -1,12 +1,9 @@
 import json
 import os
+import re
 from typing import Any
 
-# Absolute path anchored to this file so it works regardless of CWD
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-SESSION_DIR = os.path.join(BASE_DIR, "sessions")
-
-os.makedirs(SESSION_DIR, exist_ok=True)
+SESSION_DIR = os.getenv("SESSION_DIR", os.path.join(os.getcwd(), "sessions"))
 
 ALLOWED_KEYS = {
     "student_id",
@@ -19,9 +16,14 @@ ALLOWED_KEYS = {
 }
 
 
+def _safe_student_id(student_id: str) -> str:
+    safe = re.sub(r"[^A-Za-z0-9_.-]", "_", (student_id or "").strip())
+    return safe or "anonymous"
+
+
 def _default_session(student_id: str) -> dict[str, Any]:
     return {
-        "student_id": student_id,
+        "student_id": _safe_student_id(student_id),
         "current_topic": "",
         "level": "beginner",
         "progress": {"completed_topics": []},
@@ -31,38 +33,58 @@ def _default_session(student_id: str) -> dict[str, Any]:
     }
 
 
+def _session_path(student_id: str) -> str:
+    os.makedirs(SESSION_DIR, exist_ok=True)
+    return os.path.join(SESSION_DIR, f"{_safe_student_id(student_id)}.json")
+
+
+def _repair_session(session: dict[str, Any], student_id: str) -> dict[str, Any]:
+    defaults = _default_session(student_id)
+    if not isinstance(session, dict):
+        return defaults
+
+    repaired = {key: session.get(key, defaults[key]) for key in ALLOWED_KEYS}
+    repaired["student_id"] = _safe_student_id(str(repaired.get("student_id") or student_id))
+
+    if repaired["level"] not in {"beginner", "intermediate", "advanced"}:
+        repaired["level"] = "beginner"
+    if not isinstance(repaired["progress"], dict):
+        repaired["progress"] = defaults["progress"]
+    if not isinstance(repaired["progress"].get("completed_topics"), list):
+        repaired["progress"]["completed_topics"] = []
+    if not isinstance(repaired["quiz_history"], list):
+        repaired["quiz_history"] = []
+    if not isinstance(repaired["gamification"], dict):
+        repaired["gamification"] = defaults["gamification"]
+    for key, value in defaults["gamification"].items():
+        repaired["gamification"].setdefault(key, value)
+    if not isinstance(repaired["gamification"].get("badges"), list):
+        repaired["gamification"]["badges"] = []
+
+    return repaired
+
+
 def load_session(student_id: str) -> dict[str, Any]:
-    """
-    Load session from disk. Create default if not found.
-    Never returns None. Always returns a valid session dict.
-    Adds any missing keys from default schema (forward compat).
-    """
-    path = os.path.join(SESSION_DIR, f"{student_id}.json")
-    if os.path.exists(path):
-        with open(path, encoding="utf-8") as f:
-            session = json.load(f)
-        defaults = _default_session(student_id)
-        for key, val in defaults.items():
-            if key not in session:
-                session[key] = val
-        return session
-    return _default_session(student_id)
+    path = _session_path(student_id)
+    if not os.path.exists(path):
+        return _default_session(student_id)
+
+    try:
+        with open(path, encoding="utf-8") as session_file:
+            raw = json.load(session_file)
+    except (OSError, json.JSONDecodeError):
+        return _default_session(student_id)
+
+    return _repair_session(raw, student_id)
 
 
 def save_session(session: dict[str, Any]) -> None:
-    """
-    Persist session to disk as JSON.
-    Strips any undeclared top-level keys.
-    Trims quiz_history to last 100 entries.
-    """
-    for key in list(session.keys()):
-        if key not in ALLOWED_KEYS:
-            del session[key]
+    repaired = _repair_session(session, str(session.get("student_id", "")))
+    repaired["quiz_history"] = repaired["quiz_history"][-100:]
 
-    session["quiz_history"] = session["quiz_history"][-100:]
+    path = _session_path(repaired["student_id"])
+    with open(path, "w", encoding="utf-8") as session_file:
+        json.dump(repaired, session_file, indent=2)
 
-    print("Saving session:", session["student_id"])
-    path = os.path.join(SESSION_DIR, f"{session['student_id']}.json")
-    print("Path:", path)
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(session, f, indent=2)
+    session.clear()
+    session.update(repaired)
