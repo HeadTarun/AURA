@@ -1,0 +1,106 @@
+{
+  "level": "beginner",
+  "progress": {
+    "completed_topics": [
+      "Data science with Python"
+    ]
+  },
+  "quiz_history": [
+    {
+      "question": "What is the primary purpose of using an array in programming?",
+      "answer": "To store multiple values of the same data type",
+      "student_answer": "To store a single value",
+      "correct": false,
+      "score": 0
+    },
+    {
+      "question": "What is the primary purpose of an array in programming?",
+      "answer": "To store a collection of values of the same data type",
+      "student_answer": "To control the flow of a program",
+      "correct": false,
+      "score": 0
+    },
+    {
+      "question": "What is the primary purpose of using arrays in programming?",
+      "answer": "To store multiple values of the same data type in a single variable",
+      "student_answer": "To store and manipulate individual variables",
+      "correct": false,
+      "score": 0
+    },
+    {
+      "question": "What is the primary purpose of using Principal Component Analysis (PCA) in data science with Python?",
+      "answer": "To reduce model complexity by decreasing the number of features",
+      "student_answer": "To reduce model complexity by decreasing the number of features",
+      "correct": true,
+      "score": 10
+    },
+    {
+      "question": "What is the primary advantage of using the K-Fold cross-validation technique in hyperparameter tuning of machine learning models?",
+      "answer": "It allows for the evaluation of a model on unseen data while still using the entire dataset for training",
+      "student_answer": "It reduces overfitting by reducing model complexity",
+      "correct": false,
+      "score": 0
+    },
+    {
+      "question": "What is the primary purpose of using cross-validation in a Python-based data science project that involves supervised learning algorithms?",
+      "answer": "To prevent model overfitting and evaluate its performance on unseen data",
+      "student_answer": "To handle missing values in the dataset",
+      "correct": false,
+      "score": 0
+    },
+    {
+      "question": "What is the primary purpose of using the `StandardScaler` in scikit-learn for preprocessing data in machine learning models?",
+      "answer": "To normalize features by removing the mean and scaling to unit variance",
+      "student_answer": "To encode categorical variables into numerical variables",
+      "correct": false,
+      "score": 0
+    },
+    {
+      "question": "What is the primary purpose of the pandas library in Python for data science applications?",
+      "answer": "Data Manipulation and Analysis",
+      "student_answer": "Web Development",
+      "correct": false,
+      "score": 0
+    },
+    {
+      "question": "Which Python library is commonly used for data manipulation and analysis?",
+      "answer": "Pandas",
+      "student_answer": "NumPy",
+      "correct": false,
+      "score": 0
+    },
+    {
+      "question": "What is the primary library used for data manipulation and analysis in Python?",
+      "answer": "pandas",
+      "student_answer": "Matplotlib",
+      "correct": false,
+      "score": 0
+    },
+    {
+      "question": "What is the primary library used for data manipulation and analysis in Python?",
+      "answer": "Pandas",
+      "student_answer": "Scikit-learn",
+      "correct": false,
+      "score": 0
+    },
+    {
+      "question": "What is the primary library used for data manipulation and analysis in Python?",
+      "answer": "Pandas",
+      "student_answer": "Matplotlib",
+      "correct": false,
+      "score": 0
+    }
+  ],
+  "student_id": "fccde4f5-f4a2-4eeb-8e1a-70a569186938",
+  "pending_quiz": null,
+  "current_topic": "Data science with Python",
+  "gamification": {
+    "xp": 10,
+    "streak": 0,
+    "level": 1,
+    "badges": [
+      "first_lesson",
+      "perfect_quiz"
+    ]
+  }
+}
