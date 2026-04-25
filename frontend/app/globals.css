@@ -285,7 +285,8 @@ h1 {
 }
 
 input[type="email"],
-input[type="password"] {
+input[type="password"],
+input[type="text"] {
   width: 100%;
   min-height: 58px;
   padding: 0 18px;
@@ -354,6 +355,18 @@ input:focus {
 .login-button:disabled {
   cursor: wait;
   opacity: 0.75;
+}
+
+.signup-stage {
+  padding-top: clamp(42px, 7vh, 58px);
+}
+
+.signup-card .field-label:first-of-type {
+  margin-top: 0;
+}
+
+.signup-card .error-message {
+  margin-top: 18px;
 }
 
 .terms-copy,
