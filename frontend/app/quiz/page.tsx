@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import soundManager from "@/utils/soundManager";
 
 type QuizQuestion = {
   question: string;
@@ -110,7 +111,10 @@ export default function QuizPage() {
     setIsAnswered(true);
 
     if (option === currentQuestion.answer) {
+      soundManager.play("success");
       setScore((currentScore) => currentScore + 1);
+    } else {
+      soundManager.play("error");
     }
   }
 
@@ -137,17 +141,20 @@ export default function QuizPage() {
     }
 
     if (currentQuestionIndex < questions.length - 1) {
+      soundManager.play("click");
       setCurrentQuestionIndex((index) => index + 1);
       setSelectedOption("");
       setIsAnswered(false);
       return;
     }
 
+    soundManager.play("levelup");
     await submitScore(score);
     setSubmitted(true);
   }
 
   function retryQuiz() {
+    soundManager.play("click");
     setCurrentQuestionIndex(0);
     setSelectedOption("");
     setScore(0);

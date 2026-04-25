@@ -1771,3 +1771,75 @@ input:focus {
     width: 110px;
   }
 }
+
+.sound-controls {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 20;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  color: #f8fbff;
+  background: #05091a;
+  border: 2px solid #21304d;
+  border-radius: 8px;
+  box-shadow:
+    inset -3px -3px 0 #020418,
+    4px 4px 0 rgba(0, 0, 0, 0.42);
+}
+
+.sound-toggle {
+  min-width: 54px;
+  min-height: 38px;
+  color: #140d00;
+  cursor: pointer;
+  background: #ffd43b;
+  border: 2px solid #5d4300;
+  border-radius: 4px;
+  box-shadow:
+    inset -3px -3px 0 #c48a00,
+    3px 3px 0 #5d4300;
+  font-weight: 900;
+}
+
+.sound-toggle[aria-pressed="true"] {
+  color: #ffffff;
+  background: #4b5563;
+  border-color: #1f2937;
+  box-shadow:
+    inset -3px -3px 0 #273142,
+    3px 3px 0 #1f2937;
+}
+
+.sound-volume {
+  display: grid;
+  grid-template-columns: auto 92px;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 900;
+}
+
+.sound-volume input {
+  width: 92px;
+  accent-color: #22aceb;
+}
+
+@media (max-width: 620px) {
+  .sound-controls {
+    right: 12px;
+    bottom: 12px;
+    padding: 8px;
+  }
+
+  .sound-volume {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .sound-volume span {
+    display: none;
+  }
+}
