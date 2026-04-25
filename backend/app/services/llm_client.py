@@ -6,13 +6,10 @@ from typing import Any
 
 import google.generativeai as genai
 from groq import Groq
-<<<<<<< HEAD
 import dotenv
 
-dotenv.load_dotenv()
-=======
+dotenv.load_adddotenv()
 
->>>>>>> 7112dbfcf0f7cbb6a023bd5e7a3412fc2eb4431b
 GEMINI_MODEL = "gemini-2.5-flash"
 GROQ_MODEL = "llama-3.3-70b-versatile"
 TIMEOUT_SEC = 3
