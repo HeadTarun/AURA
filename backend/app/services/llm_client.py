@@ -5,17 +5,17 @@ from typing import Any
 
 try:
     from dotenv import load_dotenv
-except ImportError:  # pragma: no cover - dependency may be absent in minimal envs
+except ImportError:
     load_dotenv = None
 
 try:
     import google.generativeai as genai
-except ImportError:  # pragma: no cover
+except ImportError:
     genai = None
 
 try:
     from groq import Groq
-except ImportError:  # pragma: no cover
+except ImportError:
     Groq = None
 
 if load_dotenv is not None:

@@ -2,11 +2,13 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-COPY frontend/package.json frontend/package-lock.json ./
-RUN npm install
+COPY frontend/package.json frontend/package-lock.json* ./
+RUN npm install || npm ci
 
 COPY frontend/ .
 
 RUN npm run build
 
-CMD ["npm", "run", "start"]
+EXPOSE 3000
+
+CMD ["npm", "start"]

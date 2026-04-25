@@ -3,9 +3,9 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
+from app.services import llm_client
 from app.services.adaptation_engine import adapt_session
 from app.services.gamification import compute_gamification
-from app.services import llm_client
 from app.services.session_store import load_session, save_session
 
 router = APIRouter(tags=["evaluate"])

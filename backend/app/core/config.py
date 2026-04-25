@@ -15,7 +15,7 @@ try:
     )
     from pydantic_settings import BaseSettings, SettingsConfigDict
     from typing_extensions import Self
-except ModuleNotFoundError:  # pragma: no cover - minimal local MVP runtime
+except ModuleNotFoundError:
     BaseSettings = None
 
 
