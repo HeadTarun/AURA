@@ -8,7 +8,6 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.cors import CORSMiddleware
 
 from app.api.main import api_router
-
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
@@ -25,15 +24,16 @@ app = FastAPI(
     generate_unique_id_function=custom_generate_unique_id,
 )
 
-# CORS — allow frontend and any listed origins
-if settings.all_cors_origins:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=settings.all_cors_origins,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+# ✅ FIXED CORS (copy-paste working)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "https://ai-tutor-frontend-pink.vercel.app"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
@@ -72,10 +72,6 @@ async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONR
     )
 
 
-# ---------------------------------------------------------------------------
-# Simple health endpoint — used by Docker healthcheck and monitoring
-# Returns 200 {"status": "ok"} — does NOT require auth
-# ---------------------------------------------------------------------------
 @app.get("/health", tags=["health"])
 def health_check() -> dict:
     return {"status": "ok"}
